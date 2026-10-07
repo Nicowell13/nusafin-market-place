@@ -1,19 +1,19 @@
 import Link from "next/link";
-import { UiControls, ContactBtn } from "./ui-controls";
+import { RevealInit, NavControls, CsFloat, ContactDialog } from "./ui-controls";
 
 const steps = [
-  ["01", "Petani Terverifikasi", "Dokumen dan kualitas diperiksa sebelum produk tampil di katalog."],
-  ["02", "Buyer Memilih", "Gabungkan ikan dari beberapa petani dalam satu pesanan terintegrasi."],
-  ["03", "Kami Konsolidasikan", "Inspeksi di titik kumpul, kode lot tercatat, ekspor terjadwal mingguan."],
-  ["04", "Tiba & Terlindungi", "Buyer punya 24 jam klaim DOA dengan bukti foto/video yang terverifikasi."],
+  ["01", "Petani Terverifikasi", "Dokumen dan kualitas diperiksa ketat sebelum produk tampil di katalog."],
+  ["02", "Buyer Memilih", "Gabungkan ikan dari banyak petani dalam satu pesanan terintegrasi."],
+  ["03", "Konsolidasi Hub", "Inspeksi kondisi di titik kumpul, kode lot tercatat, ekspor terjadwal."],
+  ["04", "Tiba & Terlindungi", "Buyer punya 24 jam klaim DOA dengan bukti foto/video terverifikasi."],
 ];
 
 const faq = [
-  ["Apa itu batas DOA 5%?", "DOA ≤5% dipotong otomatis dari pembayaran petani. >5% tidak dibebankan otomatis — dimediasi bersama buyer dan petani."],
-  ["Kapan petani menerima pembayaran?", "100% dilepas setelah ikan tiba di gudang buyer di negara tujuan dan masa klaim 24 jam selesai, ditambah tenggat +7 hari."],
-  ["Apakah NusaFin eksportir?", "NusaFin fasilitator marketplace dan konsolidasi. Pengiriman bersama mitra ekspor dan logistik berizin."],
-  ["Negara tujuan mana?", "Fokus awal Eropa dan AS — mengikuti CITES, Lacey Act, health certificate, GDPR, dan regulasi tujuan."],
-  ["Berapa biaya membership?", "Petani gratis selama 1 tahun sejak pendaftaran. Biaya buyer dan layanan pengiriman masih dalam tahap finalisasi."],
+  ["Apa itu batas DOA 5%?", "DOA ≤5% dipotong otomatis dari pembayaran petani. >5% tidak dibebankan otomatis — dimediasi bersama buyer dan petani oleh tim NusaFin."],
+  ["Kapan petani menerima pembayaran?", "100% dibayarkan setelah ikan tiba di gudang buyer di negara tujuan dan masa klaim 24 jam selesai, ditambah tenggat +7 hari kerja."],
+  ["Apakah NusaFin eksportir?", "NusaFin fasilitator marketplace dan konsolidasi. Pengiriman dilakukan bersama mitra ekspor dan logistik berizin."],
+  ["Negara tujuan mana?", "Fokus awal Eropa dan Amerika Serikat — mengikuti CITES, Lacey Act, health certificate, GDPR, dan regulasi masing-masing negara tujuan."],
+  ["Berapa biaya membership?", "Petani gratis 1 tahun sejak pendaftaran. Biaya buyer dan layanan pengiriman sedang difinalkan bersama investor."],
 ];
 
 const articles = [
@@ -22,31 +22,50 @@ const articles = [
   ["REGULASI", "CITES dan Lacey Act: Panduan untuk Buyer EU & AS", "Persyaratan dokumen spesies, deklarasi impor, dan cara NusaFin membantu kepatuhan."],
 ];
 
+function RevealWrapper({ children, delay = 0, className = "" }: {
+  children: React.ReactNode; delay?: number; className?: string;
+}) {
+  return (
+    <div data-reveal style={{ "--delay": `${delay}ms` } as React.CSSProperties} className={className}>
+      {children}
+    </div>
+  );
+}
+
+function PageClient() {
+  return <RevealInit />;
+}
+
 export default function Home() {
   return (
     <main>
-      <UiControls />
+      <PageClient />
+      <CsFloat />
+      <ContactDialog />
 
-      {/* ── Navbar ────────────────────────────────── */}
+      {/* ── Navbar ─────────────────────────────── */}
       <nav className="nav">
-        <Link className="brand" href="#top">Nusa<span>Fin</span></Link>
+        <Link className="brand" href="#top">
+          Nusa<span>Fin</span>
+        </Link>
         <div className="navLinks">
           <Link href="#cara">Cara Kerja</Link>
           <Link href="#tentang">Tentang</Link>
-          <Link href="#kebijakan">Kebijakan</Link>
+          <Link href="#kebijakan">Kebijakan DOA</Link>
           <Link href="#faq">FAQ</Link>
           <Link href="#artikel">Insight</Link>
         </div>
-        <div className="navActions">
+        <div className="navRight">
+          <NavControls />
+          <div className="navDivider" />
           <Link href="/login" className="navLogin">Masuk</Link>
-          <Link className="button small" href="/register">Daftar</Link>
+          <Link className="button btnGold small" href="/register">Daftar</Link>
         </div>
       </nav>
 
-      {/* ── Hero — full-screen video ───────────────── */}
+      {/* ── Hero ─────────────────────────────────── */}
       <section id="top" className="hero">
         <div className="heroBg">
-          {/* Video: letakkan file hero-bg.mp4 di /public/ */}
           <video
             className="heroBgVideo"
             autoPlay muted loop playsInline
@@ -57,202 +76,236 @@ export default function Home() {
           </video>
           <div className="heroBgOverlay" />
         </div>
+
         <div className="heroContent">
-          <p className="eyebrow light">DARI PERAIRAN NUSANTARA · KE PASAR DUNIA</p>
-          <h1>
-            Ekspor ikan hias,<br />
-            <em>lebih terhubung.</em>
-          </h1>
-          <p className="heroLead">
-            NusaFin menyatukan petani terverifikasi, buyer internasional, dan pengiriman
-            terkonsolidasi dalam satu alur yang transparan dan terlindungi.
-          </p>
-          <div className="heroActions">
-            <Link className="button light" href="/register?role=farmer">Gabung sebagai petani</Link>
-            <Link className="button ghostLight" href="/app/catalog">Jelajahi katalog</Link>
-          </div>
-          <div className="heroStats">
-            <div className="stat"><b>24 jam</b><span>Jendela klaim DOA</span></div>
-            <div className="statDiv" />
-            <div className="stat"><b>5%</b><span>Batas DOA otomatis</span></div>
-            <div className="statDiv" />
-            <div className="stat"><b>EU + US</b><span>Pasar tujuan awal</span></div>
-          </div>
+          <RevealWrapper delay={0}>
+            <p className="eyebrow light">DARI PERAIRAN NUSANTARA · KE PASAR DUNIA</p>
+          </RevealWrapper>
+          <RevealWrapper delay={80}>
+            <h1>
+              Ekspor ikan hias,<br />
+              <em>lebih terhubung.</em>
+            </h1>
+          </RevealWrapper>
+          <RevealWrapper delay={160}>
+            <p className="heroLead">
+              NusaFin menyatukan petani terverifikasi, buyer internasional, dan
+              pengiriman terkonsolidasi dalam satu alur transparan dan terlindungi.
+            </p>
+          </RevealWrapper>
+          <RevealWrapper delay={240}>
+            <div className="heroActions">
+              <Link className="button btnGold" href="/register?role=farmer">
+                Gabung sebagai petani
+              </Link>
+              <Link className="button btnOutlineWhite" href="/app/catalog">
+                Jelajahi katalog
+              </Link>
+            </div>
+          </RevealWrapper>
+          <RevealWrapper delay={320}>
+            <div className="heroStats">
+              <div className="stat"><b>24 jam</b><span>Jendela klaim DOA</span></div>
+              <div className="statDiv" />
+              <div className="stat"><b>5%</b><span>Batas DOA otomatis</span></div>
+              <div className="statDiv" />
+              <div className="stat"><b>EU + US</b><span>Pasar tujuan awal</span></div>
+            </div>
+          </RevealWrapper>
         </div>
+
         <div className="heroScroll" aria-hidden="true">
-          <span>↓</span>
+          <div className="scrollLine" />
         </div>
       </section>
 
-      {/* ── Cara Kerja ────────────────────────────── */}
-      <section id="cara" className="section bgCream">
+      {/* ── Cara Kerja ───────────────────────────── */}
+      <section id="cara" className="section bgDark">
         <div className="sectionInner">
-          <p className="eyebrow">ALUR YANG JELAS</p>
-          <h2>Dari kolam hingga gudang buyer</h2>
+          <RevealWrapper>
+            <p className="eyebrow light">ALUR YANG JELAS</p>
+            <h2 className="textWhite">Dari kolam hingga<br />gudang buyer.</h2>
+          </RevealWrapper>
           <div className="stepsGrid">
-            {steps.map(([num, title, desc]) => (
-              <article className="stepCard" key={num}>
-                <span className="stepNum">{num}</span>
-                <h3>{title}</h3>
-                <p>{desc}</p>
-              </article>
+            {steps.map(([num, title, desc], i) => (
+              <RevealWrapper key={num} delay={i * 90}>
+                <article className="stepCard">
+                  <span className="stepNum">{num}</span>
+                  <h3>{title}</h3>
+                  <p>{desc}</p>
+                </article>
+              </RevealWrapper>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Tentang ───────────────────────────────── */}
-      <section id="tentang" className="section bgWhite">
+      {/* ── Tentang ──────────────────────────────── */}
+      <section id="tentang" className="section bgSurface">
         <div className="sectionInner splitLayout">
-          <div className="splitText">
-            <p className="eyebrow">TENTANG NUSAFIN</p>
-            <h2>Petani fokus merawat.<br />Kami urus jalur ekspornya.</h2>
-            <p className="bodyText">
-              Banyak petani unggul dalam budidaya, tetapi akses ke buyer luar negeri, dokumen
-              ekspor, dan logistik lintas benua masih rumit dan mahal. NusaFin hadir sebagai
-              jembatan — bukan pengganti petani.
-            </p>
-            <ul className="featureList">
-              <li><span className="featureIcon">✓</span> Katalog multi-petani terkurasi dan terverifikasi</li>
-              <li><span className="featureIcon">✓</span> Titik kumpul sendiri dengan inspeksi terstandar</li>
-              <li><span className="featureIcon">✓</span> Kode lot per petani untuk tracing DOA transparan</li>
-              <li><span className="featureIcon">✓</span> Pembayaran dan klaim terlacak di satu platform</li>
-            </ul>
-          </div>
-          <div className="splitVisual">
-            <div className="visualCard">
-              <div className="visualTop">
-                <span className="badge">Terverifikasi ✓</span>
-                <span className="badge green">Export Ready</span>
-              </div>
-              <div className="fishArt">🐠</div>
-              <p className="visualName">Premium Betta Halfmoon</p>
-              <p className="visualSub">Jakarta, Indonesia · Grade A</p>
-              <div className="visualRow">
-                <span>Lot ID</span><code>NF-JKT-001</code>
-              </div>
-              <div className="visualRow">
-                <span>Tujuan</span><code>Amsterdam, NL</code>
-              </div>
-              <div className="visualRow">
-                <span>DOA window</span><code>24 jam</code>
+          <RevealWrapper>
+            <div className="splitText">
+              <p className="eyebrow">TENTANG NUSAFIN</p>
+              <h2>Petani fokus merawat.<br />Kami urus ekspor.</h2>
+              <p className="bodyText">
+                Banyak petani unggul dalam budidaya, tetapi akses ke buyer luar negeri,
+                dokumen ekspor, dan logistik lintas benua masih rumit. NusaFin adalah
+                jembatan — bukan pengganti petani.
+              </p>
+              <ul className="featureList">
+                {[
+                  "Katalog multi-petani terkurasi dan terverifikasi",
+                  "Titik kumpul sendiri dengan inspeksi terstandar",
+                  "Kode lot per petani untuk tracing DOA transparan",
+                  "Pembayaran dan klaim terlacak di satu platform",
+                ].map((f) => (
+                  <li key={f}><span className="featureIcon">✦</span>{f}</li>
+                ))}
+              </ul>
+            </div>
+          </RevealWrapper>
+          <RevealWrapper delay={120}>
+            <div className="splitVisual">
+              <div className="visualCard">
+                <div className="visualTop">
+                  <span className="badge">Terverifikasi ✓</span>
+                  <span className="badgeGold">Export Ready</span>
+                </div>
+                <div className="fishArt">🐠</div>
+                <p className="visualName">Premium Betta Halfmoon</p>
+                <p className="visualSub">Jakarta, Indonesia · Grade A</p>
+                {[["Lot ID","NF-JKT-001"],["Tujuan","Amsterdam, NL"],["DOA window","24 jam"]].map(([k,v])=>(
+                  <div className="visualRow" key={k}>
+                    <span>{k}</span><code>{v}</code>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          </RevealWrapper>
         </div>
       </section>
 
-      {/* ── Kebijakan DOA ─────────────────────────── */}
-      <section id="kebijakan" className="section bgDark">
+      {/* ── DOA Policy ───────────────────────────── */}
+      <section id="kebijakan" className="section bgNavy">
         <div className="sectionInner">
-          <p className="eyebrow light">PERLINDUNGAN TRANSAKSI</p>
-          <h2 className="textWhite">Aturan DOA, tanpa area abu-abu.</h2>
+          <RevealWrapper>
+            <p className="eyebrow gold">PERLINDUNGAN TRANSAKSI</p>
+            <h2 className="textWhite">Aturan DOA,<br />tanpa area abu-abu.</h2>
+          </RevealWrapper>
           <div className="doaGrid">
-            <article className="doaCard">
-              <div className="doaBig">24H</div>
-              <h3>Jendela Klaim</h3>
-              <p>Klaim maksimal 24 jam sejak ikan masuk gudang buyer, wajib disertai foto/video sebagai bukti.</p>
-            </article>
-            <article className="doaCard accent">
-              <div className="doaBig">≤ 5%</div>
-              <h3>Potongan Terukur</h3>
-              <p>Kompensasi otomatis dipotong dari pembayaran petani sesuai lot yang terdampak.</p>
-            </article>
-            <article className="doaCard">
-              <div className="doaBig">&gt; 5%</div>
-              <h3>Eskalasi Manusia</h3>
-              <p>Tidak ada keputusan otomatis. Buyer, petani, dan admin berkomunikasi mencari resolusi terbaik.</p>
-            </article>
+            {[
+              ["24H","Jendela Klaim","Klaim maksimal 24 jam sejak ikan masuk gudang buyer, wajib disertai foto/video.",""],
+              ["≤5%","Potongan Terukur","Kompensasi otomatis dipotong dari pembayaran petani sesuai lot yang terdampak.","accent"],
+              [">5%","Eskalasi Manusia","Tidak ada keputusan otomatis. Buyer, petani, dan admin mediasi bersama.",""],
+            ].map(([big,title,desc,mod],i) => (
+              <RevealWrapper key={big} delay={i*80}>
+                <article className={`doaCard ${mod}`}>
+                  <div className="doaBig">{big}</div>
+                  <h3>{title}</h3>
+                  <p>{desc}</p>
+                </article>
+              </RevealWrapper>
+            ))}
           </div>
-          <p className="doaNote">Kejadian luar biasa setelah batas waktu dapat ditinjau manual dengan alasan tercatat dalam audit log.</p>
+          <RevealWrapper>
+            <p className="doaNote">Kejadian luar biasa setelah batas waktu ditinjau manual dengan alasan tercatat dalam audit log.</p>
+          </RevealWrapper>
         </div>
       </section>
 
-      {/* ── FAQ ───────────────────────────────────── */}
-      <section id="faq" className="section bgCream">
+      {/* ── FAQ ──────────────────────────────────── */}
+      <section id="faq" className="section bgSurface">
         <div className="sectionInner splitLayout">
-          <div className="splitText">
-            <p className="eyebrow">PERTANYAAN UMUM</p>
-            <h2>Yang perlu diketahui sebelum mulai.</h2>
-          </div>
-          <div className="faqList">
-            {faq.map(([q, a]) => (
-              <details className="faqItem" key={q}>
-                <summary className="faqQ">{q}</summary>
-                <p className="faqA">{a}</p>
-              </details>
-            ))}
-          </div>
+          <RevealWrapper>
+            <div className="splitText">
+              <p className="eyebrow">PERTANYAAN UMUM</p>
+              <h2>Yang perlu diketahui<br />sebelum mulai.</h2>
+            </div>
+          </RevealWrapper>
+          <RevealWrapper delay={100}>
+            <div className="faqList">
+              {faq.map(([q, a]) => (
+                <details className="faqItem" key={q}>
+                  <summary className="faqQ">{q}</summary>
+                  <p className="faqA">{a}</p>
+                </details>
+              ))}
+            </div>
+          </RevealWrapper>
         </div>
       </section>
 
-      {/* ── Artikel SEO ───────────────────────────── */}
-      <section id="artikel" className="section bgWhite">
+      {/* ── Artikel ──────────────────────────────── */}
+      <section id="artikel" className="section bgDark">
         <div className="sectionInner">
-          <p className="eyebrow">INSIGHT & PANDUAN</p>
-          <h2>Belajar ekspor ikan hias.</h2>
+          <RevealWrapper>
+            <p className="eyebrow light">INSIGHT & PANDUAN</p>
+            <h2 className="textWhite">Belajar ekspor ikan hias.</h2>
+          </RevealWrapper>
           <div className="articleGrid">
-            {articles.map(([tag, title, desc]) => (
-              <article className="articleCard" key={title}>
-                <span className="articleTag">{tag}</span>
-                <h3 className="articleTitle">{title}</h3>
-                <p className="articleDesc">{desc}</p>
-                <a className="articleLink" href="#artikel">Segera hadir →</a>
-              </article>
+            {articles.map(([tag, title, desc], i) => (
+              <RevealWrapper key={title} delay={i * 80}>
+                <article className="articleCard">
+                  <span className="articleTag">{tag}</span>
+                  <h3 className="articleTitle">{title}</h3>
+                  <p className="articleDesc">{desc}</p>
+                  <a className="articleLink" href="#artikel">Segera hadir →</a>
+                </article>
+              </RevealWrapper>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Legal ─────────────────────────────────── */}
-      <section className="section bgCream">
+      {/* ── Legal ────────────────────────────────── */}
+      <section className="section bgSurface2">
         <div className="sectionInner twoCol">
-          <article className="legalCard">
-            <p className="eyebrow">TERMS</p>
-            <h3>Ketentuan Layanan</h3>
-            <p>NusaFin bertindak sebagai fasilitator marketplace dan konsolidasi. Harga, risiko FCA/FOB, klaim, pembayaran, dan tanggung jawab setiap pihak dijelaskan sebelum transaksi.</p>
-            <Link href="/terms" className="textLink">Baca ketentuan lengkap →</Link>
-          </article>
-          <article className="legalCard">
-            <p className="eyebrow">PRIVACY</p>
-            <h3>Privasi & Data</h3>
-            <p>Data dikumpulkan seperlunya, dilindungi sesuai UU PDP dan GDPR, serta tidak dijual. Pengguna dapat meminta akses atau penghapusan data kapan saja.</p>
-            <Link href="/privacy" className="textLink">Baca kebijakan lengkap →</Link>
-          </article>
+          {[
+            ["TERMS","Ketentuan Layanan","/terms","NusaFin bertindak sebagai fasilitator marketplace dan konsolidasi. Harga, risiko FCA/FOB, klaim, dan tanggung jawab setiap pihak dijelaskan sebelum transaksi."],
+            ["PRIVACY","Privasi & Data","/privacy","Data dikumpulkan seperlunya, dilindungi sesuai UU PDP dan GDPR, serta tidak dijual. Pengguna dapat meminta akses atau penghapusan data kapan saja."],
+          ].map(([tag,title,href,desc])=>(
+            <RevealWrapper key={tag}>
+              <article className="legalCard">
+                <p className="eyebrow">{tag}</p>
+                <h3>{title}</h3>
+                <p>{desc}</p>
+                <Link href={href} className="textLink">Baca selengkapnya →</Link>
+              </article>
+            </RevealWrapper>
+          ))}
         </div>
       </section>
 
-      {/* ── CTA ───────────────────────────────────── */}
-      <section className="section bgGreen ctaSection">
+      {/* ── CTA ──────────────────────────────────── */}
+      <section className="section bgNavy ctaSection">
         <div className="sectionInner ctaInner">
-          <p className="eyebrow light">MULAI PERJALANAN</p>
-          <h2 className="textWhite">Ikan terbaik Nusantara.<br />Buyer di seluruh dunia.</h2>
-          <div className="heroActions">
-            <Link className="button light" href="/register">Buat akun NusaFin</Link>
-            <ContactBtn label="Hubungi kami" />
-          </div>
+          <RevealWrapper>
+            <p className="eyebrow gold">MULAI PERJALANAN</p>
+            <h2 className="textWhite">Ikan terbaik Nusantara.<br />Buyer di seluruh dunia.</h2>
+            <div className="heroActions ctaActions">
+              <Link className="button btnGold" href="/register">Buat akun NusaFin</Link>
+              <ContactDialog />
+            </div>
+          </RevealWrapper>
         </div>
       </section>
 
-      {/* ── Footer ────────────────────────────────── */}
+      {/* ── Footer ───────────────────────────────── */}
       <footer className="footer">
         <div className="footerTop">
           <div>
             <Link className="brand" href="#top">Nusa<span>Fin</span></Link>
             <p className="footerTagline">Marketplace ekspor ikan hias Indonesia</p>
           </div>
-          <div className="footerLinks">
-            <Link href="#cara">Cara Kerja</Link>
-            <Link href="#tentang">Tentang</Link>
-            <Link href="/terms">Ketentuan</Link>
-            <Link href="/privacy">Privasi</Link>
-          </div>
+          <nav className="footerLinks">
+            {[["#cara","Cara Kerja"],["#tentang","Tentang"],["#kebijakan","Kebijakan DOA"],["#faq","FAQ"],["/terms","Ketentuan"],["/privacy","Privasi"]].map(([href,label])=>(
+              <Link key={href} href={href}>{label}</Link>
+            ))}
+          </nav>
         </div>
         <div className="footerBottom">
-          <small>© 2026 NusaFin. Prototype untuk review internal.</small>
-          <small>
-            <a href="mailto:hello@nusafin.example">hello@nusafin.example</a>
-          </small>
+          <small>© 2026 NusaFin · Prototype untuk review internal.</small>
+          <small><a href="mailto:hello@nusafin.example">hello@nusafin.example</a></small>
         </div>
       </footer>
     </main>

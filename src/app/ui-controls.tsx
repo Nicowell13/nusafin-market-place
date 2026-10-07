@@ -1,27 +1,43 @@
 "use client";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 
-export function UiControls() {
+/* ── Scroll reveal (Intersection Observer) ───── */
+export function RevealInit() {
+  useEffect(() => {
+    const els = document.querySelectorAll("[data-reveal]");
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            (e.target as HTMLElement).dataset.visible = "1";
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+  return null;
+}
+
+/* ── Navbar: ID/EN toggle + dark/light ────────── */
+export function NavControls() {
   const [lang, setLang] = useState<"ID" | "EN">("ID");
-  const [dark, setDark] = useState(false);
-  const dialog = useRef<HTMLDialogElement>(null);
+  const [dark, setDark] = useState<boolean>(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("theme");
-    const isDark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = saved
+      ? saved === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
     document.documentElement.dataset.theme = isDark ? "dark" : "light";
-    // Read from DOM so no cascading re-render from setState
-    const root = document.documentElement;
-    const observer = new MutationObserver(() => {
-      setDark(root.dataset.theme === "dark");
-    });
-    observer.observe(root, { attributes: true, attributeFilter: ["data-theme"] });
-    setDark(isDark);
-    return () => observer.disconnect();
+    queueMicrotask(() => setDark(isDark));
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setDark(d => {
+    setDark((d) => {
       const next = !d;
       document.documentElement.dataset.theme = next ? "dark" : "light";
       localStorage.setItem("theme", next ? "dark" : "light");
@@ -29,83 +45,79 @@ export function UiControls() {
     });
   }, []);
 
-  const closeOnBackdrop = useCallback((e: React.MouseEvent<HTMLDialogElement>) => {
-    if (e.target === dialog.current) dialog.current?.close();
-  }, []);
+  return (
+    <div className="navControls">
+      <button
+        className="navPill"
+        onClick={() => setLang((l) => (l === "ID" ? "EN" : "ID"))}
+        aria-label="Toggle language"
+      >
+        {lang === "ID" ? "ID" : "EN"}
+      </button>
+      <button
+        className="navPill themeToggle"
+        onClick={toggleTheme}
+        aria-label="Toggle theme"
+      >
+        {dark ? "☀" : "☾"}
+      </button>
+    </div>
+  );
+}
+
+/* ── CS floating circle ───────────────────────── */
+export function CsFloat() {
+  return (
+    <button
+      className="csFloat"
+      aria-label="Customer Service"
+      title="Chat CS — segera hadir"
+      onClick={() => alert("Fitur live chat CS sedang dalam pengembangan.")}
+    >
+      CS
+    </button>
+  );
+}
+
+/* ── Contact dialog ───────────────────────────── */
+export function ContactDialog() {
+  const ref = useRef<HTMLDialogElement>(null);
+  const open = useCallback(() => ref.current?.showModal(), []);
+  const close = useCallback(
+    (e: React.MouseEvent<HTMLDialogElement>) => {
+      if (e.target === ref.current) ref.current?.close();
+    },
+    []
+  );
 
   return (
     <>
-      {/* ── Top controls ─────────────────────────── */}
-      <div className="uiControls">
-        <button
-          onClick={() => setLang(l => l === "ID" ? "EN" : "ID")}
-          aria-label="Toggle language"
-          title={lang === "ID" ? "Switch to English" : "Ganti ke Indonesia"}
-        >
-          {lang === "ID" ? "🇮🇩 ID" : "🇺🇸 EN"}
-        </button>
-        <button onClick={toggleTheme} aria-label="Toggle dark mode">
-          {dark ? "☀️" : "🌙"}
-        </button>
-      </div>
-
-      {/* ── CS floating bubble ─────────────────────── */}
-      <button
-        className="csFloat"
-        aria-label="Customer Service"
-        title={lang === "ID" ? "Chat CS — Segera hadir" : "Customer Service — Coming soon"}
-        onClick={() => alert(lang === "ID" ? "Fitur chat CS segera hadir." : "Live CS chat coming soon.")}
-      >
-        CS
+      <button className="ctaSecondary" onClick={open}>
+        Hubungi kami
       </button>
-
-      {/* ── Contact dialog ─────────────────────────── */}
-      <dialog ref={dialog} className="contactDialog" onClick={closeOnBackdrop}>
+      <dialog ref={ref} className="contactDialog" onClick={close}>
         <form method="dialog">
-          <button className="dialogClose" aria-label="Tutup">×</button>
+          <button className="dialogClose" aria-label="Tutup">✕</button>
         </form>
         <p className="eyebrow">CONTACT NUSAFIN</p>
-        <h2 className="dialogTitle">
-          {lang === "ID" ? "Ceritakan kebutuhan Anda." : "Tell us what you need."}
-        </h2>
-        <form onSubmit={e => e.preventDefault()}>
+        <h2 className="dialogTitle">Ceritakan kebutuhan Anda.</h2>
+        <form onSubmit={(e) => e.preventDefault()}>
           <label className="fieldLabel">
-            {lang === "ID" ? "Nama" : "Name"}
-            <input className="field" required placeholder={lang === "ID" ? "Nama lengkap" : "Full name"} />
+            Nama lengkap
+            <input className="field" required placeholder="Nama Anda" />
           </label>
           <label className="fieldLabel">
             Email
             <input className="field" type="email" required placeholder="hello@example.com" />
           </label>
           <label className="fieldLabel">
-            {lang === "ID" ? "Pesan" : "Message"}
-            <textarea className="field" rows={4} required
-              placeholder={lang === "ID" ? "Ceritakan kebutuhan Anda…" : "Tell us about your needs…"} />
+            Pesan
+            <textarea className="field" rows={4} required placeholder="Ceritakan kebutuhan Anda…" />
           </label>
-          <button className="button" type="submit">
-            {lang === "ID" ? "Kirim permintaan" : "Send request"}
-          </button>
-          <p className="formNote">
-            {lang === "ID"
-              ? "Prototype: pengiriman email aktif setelah backend tersedia."
-              : "Prototype: email delivery active after backend launch."}
-          </p>
+          <button className="button btnGold" type="submit">Kirim permintaan</button>
+          <p className="formNote">Prototype — pengiriman email aktif setelah backend tersedia.</p>
         </form>
       </dialog>
     </>
-  );
-}
-
-export function ContactBtn({ label }: { label: string }) {
-  return (
-    <button
-      className="button ghost"
-      onClick={() => {
-        const dialog = document.querySelector(".contactDialog") as HTMLDialogElement | null;
-        dialog?.showModal();
-      }}
-    >
-      {label}
-    </button>
   );
 }
