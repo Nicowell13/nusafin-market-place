@@ -24,7 +24,35 @@ Marketplace petani ikan hias → pembeli ekspor. Sesuai stack di MEMORY.md.
 
 **Selesai jika:** repo push, `next dev` jalan, Supabase project connect, login dummy (email test) work.
 
-## Fase 1 — Auth & peran (minggu 1)
+## Fase 0.5 — UI/UX Interactive Prototype & Static Pages (minggu 1)
+
+Fokus ke validasi user experience, evaluasi visual/layout, dan halaman informasi publik sebelum backend/database dihubungkan secara fungsional penuh.
+
+- **Design System & Branding Dasar**:
+  - Warna, tipografi, komponen UI dasar (Button, Card, Modal, Input, Badge, Table).
+  - Dukungan dwibahasa (ID/EN toggle preview).
+- **Halaman Statis & Legal (SEO & Kepatuhan)**:
+  - Landing page publik (Hero, Value Proposition, Cara Kerja, Katalog Unggulan).
+  - About Us / Tentang NusaFin.
+  - Terms & Conditions (Ketentuan Layanan perantara, ekspor FOB/FCA, titik kumpul).
+  - DOA Policy & Claim Terms (Jendela 24 jam, batas 5%, aturan eskalasi & force majeure).
+  - Privacy Policy (Kepatuhan UU PDP + GDPR Uni Eropa).
+  - FAQ (Pertanyaan umum untuk petani lokal & pembeli luar negeri).
+  - Contact / Pusat Bantuan.
+- **Interactive UI Mockups & User Flow Preview**:
+  - Alur Registrasi & Onboarding Mockup:
+    - Petani (input data tambak/kolam, upload dokumen NIB/sertifikat).
+    - Pembeli Internasional (pilihan membership, data importir/negara tujuan).
+  - Katalog & Detail Produk Mockup (filter spesies, grade, estimasi biaya FOB).
+  - Preview Keranjang & Checkout Multi-Petani (simulasi pemecahan sub-order & lot).
+  - Mockup Dashboard:
+    - Petani (status stok, monitoring pengiriman, pencairan dana).
+    - Pembeli (tracking pengiriman konsolidasi, form klaim DOA 24 jam).
+    - Admin (verifikasi petani, manajemen konsolidasi).
+
+**Selesai jika:** User/Anda dapat mengklik dan mereview seluruh alur navigasi visual, halaman statis legal terbaca lengkap, dan tampilan di-approve sebelum integrasi database/backend.
+
+## Fase 1 — Auth & peran (minggu 2)
 
 - Supabase Auth: email + OTP WA (rate-limit login).
 - Peran di `app_metadata`: `petani`, `pembeli`, `admin`, `moderator`, `finance`.
@@ -176,7 +204,7 @@ Bisa menyusul: pentest pihak ketiga, WAF lanjut, audit log detail.
 ## Urutan dependency
 
 ```
-Fase 0 → 1 → 2 (petani) → 3 (katalog) → 4 (order) → 5 (kirim) → 6 (DOA) → 7 (bayar) → 8 (dashboard) → 9 (hardening)
+Fase 0 → 0.5 (UI/UX & Static Pages) → 1 → 2 (petani) → 3 (katalog) → 4 (order) → 5 (kirim) → 6 (DOA) → 7 (bayar) → 8 (dashboard) → 9 (hardening)
 ```
 
 Fase 2-3 bisa paralel dengan 1 kalau tim >1 dev. Fase 7 butuh 4-5 selesai. Fase 9 jalan terus, checklist resmi sebelum publish.
